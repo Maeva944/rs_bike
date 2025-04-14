@@ -1,0 +1,48 @@
+# Node.js modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Dependency directories
+jspm_packages/
+
+# Build directories
+dist/
+build/
+*.tgz
+
+# Yarn lock file
+yarn.lock
+
+# PM2 logs
+pids/
+*.pid
+*.seed
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Serverless deployment files
+.serverless/
+
+# Optional npm cache directory
+.npm/
+
+# Windows installer files
+*.cab
+*.msi
