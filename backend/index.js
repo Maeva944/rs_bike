@@ -1,16 +1,16 @@
-// Importer le module Express
 const express = require('express');
 const app = express();
+const cors = require("cors");
+const Inscription = require ("./api/inscription");
+const Connexion = require('./api/auth');
 
-// Middleware pour gérer les requêtes JSON
+
 app.use(express.json());
+app.use(cors());
 
-// Exemple de route de base
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.use("/inscription", Inscription);
+app.use('/auth', Connexion);
 
-// Démarrer le serveur sur un port spécifique
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
