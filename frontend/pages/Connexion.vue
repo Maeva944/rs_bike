@@ -38,7 +38,7 @@
             try{
                 const response = await fetch("http://localhost:3000/auth", {
                     method: "POST",
-                    header: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email: this.email, password: this.password }),
                 })
                 const data = await response.json();
@@ -102,6 +102,11 @@ input[type="password"]:focus {
   border-color: #574c0e;
 }
 
+.form-password input {
+  width: 90%; 
+}
+
+
 input[type="submit"] {
   background-color: #f4b400;
   color: white;
@@ -128,6 +133,7 @@ input[type="submit"]:hover {
   color: #f4b400;
   font-size: 14px;
   cursor: pointer;
+  margin-left: 15px;
 }
 
 .signup-link {

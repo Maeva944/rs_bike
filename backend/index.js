@@ -13,6 +13,7 @@ const message_contact = require('./api/message_contact');
 
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/inscription", Inscription);
 app.use('/auth', Connexion);
