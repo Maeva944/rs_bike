@@ -41,6 +41,11 @@ CREATE TABLE marque(
     nom VARCHAR(150)
 );
 
+CREATE TABLE couleur(
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(150)
+)
+
 CREATE TABLE vehicule(
     id SERIAL PRIMARY KEY, 
     nom VARCHAR(150) NOT NULL,
@@ -50,11 +55,11 @@ CREATE TABLE vehicule(
     embrayage VARCHAR(250) NOT NULL,
     prix INT NOT NULL, 
     puissance_maxi VARCHAR(250) NOT NULL,
-    couleur VARCHAR(250) NOT NULL,
     photo VARCHAR(255),
     id_categorie INT REFERENCES categorie(id),
     id_type INT REFERENCES type_vehicule(id),
-    id_marque INT REFERENCES marque(id)
+    id_marque INT REFERENCES marque(id),
+    id_couleur INT REFERENCES couleur(id)
 );
 
 CREATE TABLE avis(

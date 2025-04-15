@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
         const searchTerm = search ? `%${search}%` : "%";
 
         const vehicule = await pool.query(`
-            SELECT nom FROM vehicule
+            SELECT * FROM vehicule
             WHERE LOWER(nom) LIKE LOWER($1)
         `, [searchTerm]);
 

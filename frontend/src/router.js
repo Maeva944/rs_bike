@@ -21,5 +21,40 @@ const router = createRouter({
     ]
 })
 
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem("token");
 
-export default router
+    if (to.meta.requiresAuth) {
+        if (!token) {
+            console.warn("🚫 Aucun token trouvé, redirection vers /connexion");
+            return next("/connexion");
+        }
+
+        try {
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+            const userRole = decoded.role_id;
+
+            if (userRole === 3) {
+                const restrictedPages = ['/admin-dashboard'];
+
+                if (restrictedPages.includes(to.path)) {
+                    return next("/unauthorized");
+                }
+            }
+
+            if (to.meta.restrictedTo === 'admin' && userRole !== 1) {
+                return next("/unauthorized");
+            }
+
+            return next();
+        } catch (error) {
+            console.error("Erreur de décodage du token :", error);
+            localStorage.removeItem("token");
+            return next("/connexion");
+        }
+    }
+
+    next();
+});
+
+export default router;
