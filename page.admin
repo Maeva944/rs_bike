@@ -1,0 +1,137 @@
+<template>
+  <div class="min-h-screen bg-black text-white p-6">
+    <h1 class="text-4xl font-bold text-yellow-400 mb-8">Espace Admin – Gestion des Motos 🛠️</h1>
+
+<!-- Formulaire d'ajout ou d'édition -->
+<form  class="bg-yellow-500 p-4 rounded-2xl text-black max-w-xl mb-10"><h2 class="text-xl font-semibold mb-4">
+        {{ isEditing ? 'Modifier la Moto' : 'Ajouter une Moto / Scooter' }}
+      </h2>
+
+      <div class="mb-3">
+        <label class="block font-semibold">Nom</label>
+        <input v-model="nouvelleMoto.nom" required class="w-full p-2 rounded" />
+      </div>
+
+      <div class="mb-3">
+        <label class="block font-semibold">Catégorie</label>
+        <select v-model="nouvelleMoto.categorie" class="w-full p-2 rounded">
+          <option value="moto">Moto</option>
+          <option value="scooter">Scooter</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="block font-semibold">URL de l'image</label>
+        <input v-model="nouvelleMoto.image" required class="w-full p-2 rounded" />
+      </div>
+
+      <button
+        type="submit"
+        class="bg-black text-yellow-400 px-4 py-2 rounded hover:bg-yellow-400 hover:text-black transition"
+      >
+        {{ isEditing ? 'Enregistrer les modifications' : 'Ajouter' }}
+      </button>
+
+      <button
+        v-if="isEditing"
+        type="button"
+        class="ml-2 text-red-700 underline"
+      >
+        Annuler
+      </button>
+    </form>
+
+    <!-- Liste des motos -->
+    <div>
+      <h2 class="text-2xl font-semibold mb-4">Liste des Motos & Scooters</h2>
+      <div class="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
+        <div
+          v-for="(moto, index) in motos"
+          :key="index"
+          class="bg-yellow-100 text-black p-4 rounded-xl shadow-md"
+        >
+          <img :src="moto.image" alt="moto" class="w-full h-40 object-cover rounded mb-3" />
+          <h3 class="font-bold text-lg">{{ moto.nom }}</h3>
+          <p class="text-sm">Catégorie : {{ moto.categorie }}</p>
+
+          <div class="mt-3 flex gap-2">
+            <button
+              @click="remplirFormulairePourEdition(index)"
+              class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-800"
+            >
+              Modifier
+            </button>
+            <button
+              @click="supprimerMoto(index)"
+              class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800"
+            >
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+export default {
+  name: 'Admin',
+  data() {
+    return {
+      isEditing: false,
+      indexEnCours: null,
+      nouvelleMoto: {
+        nom: '',
+        categorie: 'moto',
+        image: ''
+      },
+      motos: [
+        {
+          nom: 'Yamaha Tracer 9 GT',
+          categorie: 'moto',
+          image: 'https://cdn.pixabay.com/photo/2021/10/08/12/17/yamaha-6590256_1280.jpg'
+        },
+        {
+          nom: 'Honda X-ADV',
+          categorie: 'scooter',
+          image: 'https://cdn.pixabay.com/photo/2020/02/18/08/19/motorbike-4858265_1280.jpg'
+        }
+      ]
+    };
+  },
+  methods: {
+    ajouterMoto() {
+      this.motos.push({ ...this.nouvelleMoto });
+      this.nouvelleMoto = { nom: '', categorie: 'moto', image: '' };
+    },
+    supprimerMoto(index) {
+      this.motos.splice(index, 1);
+    },
+    remplirFormulairePourEdition(index) {
+      this.indexEnCours = index;
+      this.nouvelleMoto = { ...this.motos[index] };
+      this.isEditing = true;
+    },
+    modifierMoto() {
+      this.$set(this.motos, this.indexEnCours, { ...this.nouvelleMoto });
+      this.annulerEdition();
+    },
+    annulerEdition() {
+      this.nouvelleMoto = { nom: '', categorie: 'moto', image: '' };
+      this.indexEnCours = null;
+      this.isEditing = false;
+    }
+  }
+};
+</script>
+
+<style scoped>
+input,
+select {
+  background-color: white;
+  color: black;
+}
+</style>
+
+
