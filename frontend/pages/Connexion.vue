@@ -53,7 +53,10 @@
             }catch (error) {
                 this.errorMessage = "Erreur lors de la connexion.";
             }
-        }
+        },
+        goToInscription() {
+        this.$router.push("/inscription");
+      }
     }
 }
 </script>
