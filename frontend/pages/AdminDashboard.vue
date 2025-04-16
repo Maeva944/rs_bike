@@ -104,6 +104,15 @@
         </form>
       </div>
   
+      <!-- Formulaire pour Modifier un Type -->
+      <div v-if="editingType">
+        <h2>Modifier le Type</h2>
+        <form @submit.prevent="updateType">
+          <input type="text" v-model="editingType.nom" placeholder="Nom du type" required />
+          <button type="submit">Sauvegarder</button>
+        </form>
+      </div>
+  
       <!-- Liste des Couleurs -->
       <div>
         <h2>Couleurs</h2>
@@ -129,6 +138,15 @@
         <form @submit.prevent="addCouleur">
           <input type="text" v-model="newCouleur" placeholder="Nom de la couleur" required />
           <button type="submit">Ajouter une Couleur</button>
+        </form>
+      </div>
+  
+      <!-- Formulaire pour Modifier une Couleur -->
+      <div v-if="editingCouleur">
+        <h2>Modifier la Couleur</h2>
+        <form @submit.prevent="updateCouleur">
+          <input type="text" v-model="editingCouleur.nom" placeholder="Nom de la couleur" required />
+          <button type="submit">Sauvegarder</button>
         </form>
       </div>
   
@@ -159,8 +177,18 @@
           <button type="submit">Ajouter une Marque</button>
         </form>
       </div>
+  
+      <!-- Formulaire pour Modifier une Marque -->
+      <div v-if="editingMarque">
+        <h2>Modifier la Marque</h2>
+        <form @submit.prevent="updateMarque">
+          <input type="text" v-model="editingMarque.nom" placeholder="Nom de la marque" required />
+          <button type="submit">Sauvegarder</button>
+        </form>
+      </div>
     </div>
   </template>
+  
   
   <script>
 export default {
@@ -187,7 +215,7 @@ export default {
   async created() {
     await this.fetchCategories();
     await this.fetchTypes();
-    await this.fetchVehicles();
+   
     await this.fetchCouleurs();
     await this.fetchMarques();
   },
@@ -254,7 +282,7 @@ export default {
     // Add methods for all entities
     async addCategorie() {
       try {
-        const response = await fetch("http://localhost:3000/categorie", {
+        const response = await fetch("http://localhost:3000/categorie/add", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -290,7 +318,7 @@ export default {
 
     async addType() {
       try {
-        const response = await fetch("http://localhost:3000/typevehicule", {
+        const response = await fetch("http://localhost:3000/typevehicule/add", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -308,7 +336,7 @@ export default {
 
     async addCouleur() {
       try {
-        const response = await fetch("http://localhost:3000/couleur", {
+        const response = await fetch("http://localhost:3000/couleur/add", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -326,7 +354,7 @@ export default {
 
     async addMarque() {
       try {
-        const response = await fetch("http://localhost:3000/marque", {
+        const response = await fetch("http://localhost:3000/marque/add", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -366,7 +394,7 @@ export default {
     // Update methods for all entities
     async updateCategorie() {
       try {
-        const response = await fetch(`http://localhost:3000/categories/${this.editingCategorie.id}`, {
+        const response = await fetch(`http://localhost:3000/categorie/${this.editingCategorie.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -387,7 +415,7 @@ export default {
 
     async updateVehicule() {
       try {
-        const response = await fetch(`http://localhost:3000/vehicules/${this.editingVehicule.id}`, {
+        const response = await fetch(`http://localhost:3000/vehicule/${this.editingVehicule.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
