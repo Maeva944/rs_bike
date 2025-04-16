@@ -31,7 +31,6 @@ export default {
       timeoutId = setTimeout(() => {
         console.warn("⏳ Temps d'inactivité écoulé, déconnexion !");
         localStorage.removeItem("token");
-        router.push("/connexion");
       }, inactivityTimeout);
     };
 
@@ -40,7 +39,6 @@ export default {
 
       if (!token) {
         console.warn("🚫 Aucun token trouvé, redirection vers /connexion");
-        router.push("/connexion");
         isLoading.value = false;
         return;
       }
@@ -76,7 +74,7 @@ export default {
   },
 };
 </script>
-<style >
+<style>
 * {
   margin: 0;
   padding: 0;
@@ -89,10 +87,5 @@ html, body {
   background-color: #f0f0f0;
 }
 
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
 
 </style>

@@ -43,15 +43,23 @@ export default {
       vehicles: [],
       selectedBrand: "",
       selectedType: "",
-      categoryId: this.$route.params.id,
+      categoryId: this.$route.params.id, // ID de la catégorie depuis la route
     };
   },
   created() {
     this.fetchBrands();
     this.fetchTypes();
-    this.fetchVehicles();
+    this.fetchVehicles(); // Charge initialement les véhicules
   },
-  methods: {
+  beforeRouteUpdate(to, from, next) {
+    // Si l'ID de la catégorie change, recharger les véhicules
+    if (to.params.id !== from.params.id) {
+      this.categoryId = to.params.id;
+      this.fetchVehicles();
+    }
+    next(); // Passe à la prochaine étape du routage
+  },
+    methods: {
     async fetchBrands() {
       try {
         const response = await fetch("http://localhost:3000/marque", {
@@ -79,9 +87,6 @@ export default {
         console.error("Erreur lors de la récupération des types", error);
       }
     },
-    reloading(){
-        this.fetchVehicles();
-    },
     async fetchVehicles() {
   try {
     let apiUrl = `http://localhost:3000/categorie/vehicule/categorie/${this.categoryId}?`;
@@ -107,7 +112,10 @@ export default {
   } catch (error) {
     console.error("Erreur lors de la récupération des véhicules", error);
   }
-}
+    },
+    goToVehicleDetail(id) {
+        this.$router.push(`/vehiculedetail/${id}`);
+    }
 
   },
 };
@@ -115,23 +123,23 @@ export default {
 
   
 <style scoped>
+body{
+    display: flex;
+    flex-wrap: wrap;
+}
 .filter-container {
   margin-bottom: 20px;
+  width: 40%;
 }
 
-.filter-container label {
-  margin-right: 10px;
-}
 
-.filter-container select {
-  margin-right: 20px;
-}
 
 .product-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
+  justify-content: space-between;
 }
 
 .no-vehicles {
@@ -150,8 +158,8 @@ export default {
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   background-color: #f9f9f9;
-  max-width: 250px;
-  margin: 0 auto;
+  width: 250px;
+  margin: 0; 
 }
 
 .vehicle-card:hover {
@@ -187,7 +195,7 @@ h3 {
 .price {
   font-size: 16px;
   font-weight: bold;
-  color: #f1c40f; /* Jaune */
+  color: #f1c40f;
 }
 
 </style>

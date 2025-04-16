@@ -1,8 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Accueil from './pages/Accueil.vue'
+import Accueil from './pages/Accueil.vue';
 import Inscription from "./pages/Inscription.vue";
 import Connexion from "./pages/Connexion.vue";
-import VehiculeByCategorie from "./pages/Categorie.vue"
+import VehiculeByCategorie from "./pages/Categorie.vue";
+import VehiculeDetail from "./pages/VehiculeDetail.vue";
+import AdminDashboard from "./pages/AdminDashboard.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -22,24 +24,28 @@ const router = createRouter({
         {
             path: '/categorie/:id',
             component: VehiculeByCategorie
+        },
+        {
+            path: '/vehiculedetail/:id',
+            component: VehiculeDetail
+        },
+        {
+            path: '/admin-dashboard',
+            component: AdminDashboard,
+            meta: { requiresAuth: true, restrictedTo: 'admin' }
         }
     ]
-})
+});
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem("token");
 
     if (to.meta.requiresAuth) {
-        if (!token) {
-            console.warn("🚫 Aucun token trouvé, redirection vers /connexion");
-            return next("/connexion");
-        }
-
         try {
             const decoded = JSON.parse(atob(token.split('.')[1]));
             const userRole = decoded.role_id;
 
-            if (userRole === 3) {
+            if (userRole === 2) {
                 const restrictedPages = ['/admin-dashboard'];
 
                 if (restrictedPages.includes(to.path)) {
