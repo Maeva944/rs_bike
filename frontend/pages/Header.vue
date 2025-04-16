@@ -7,7 +7,7 @@
       <div v-if="categories.length > 0" class="categories">
         <ul>
           <li v-for="categorie in categories" :key="categorie.id">
-            <router-link :to="`/categorie/${categorie.id}`">{{ categorie.nom }}</router-link>
+            <router-link @change="reloading" :to="`/categorie/${categorie.id}`">{{ categorie.nom }}</router-link>
           </li>
         </ul>
       </div>

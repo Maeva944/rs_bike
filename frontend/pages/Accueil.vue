@@ -45,15 +45,14 @@
     },
     watch: {
       searchQuery(newQuery) {
-        if (newQuery.length > 2) {
-          this.updateSuggestions();  // Mettre à jour les suggestions avec la recherche
+        if (newQuery.length > 0) {
+          this.updateSuggestions(); 
         } else {
-          this.filteredSuggestions = [];  // Vider les suggestions si moins de 3 caractères
+          this.filteredSuggestions = []; 
         }
       },
     },
     methods: {
-      // Méthode pour récupérer les véhicules via l'API
       async fetchVehicules() {
         try {
           const response = await fetch("http://localhost:3000/vehicule");

@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Accueil from './pages/Accueil.vue'
 import Inscription from "./pages/Inscription.vue";
 import Connexion from "./pages/Connexion.vue";
+import VehiculeByCategorie from "./pages/Categorie.vue"
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -17,6 +18,10 @@ const router = createRouter({
         {
             path: '/connexion',
             component: Connexion
+        },
+        {
+            path: '/categorie/:id',
+            component: VehiculeByCategorie
         }
     ]
 })
