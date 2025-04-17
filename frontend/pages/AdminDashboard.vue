@@ -38,43 +38,77 @@
           <button type="submit">Sauvegarder</button>
         </form>
       </div>
-  
-      <!-- Liste des Véhicules -->
       <div>
-        <h2>Véhicules</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="vehicule in vehicles" :key="vehicule.id">
-              <td>{{ vehicule.id }}</td>
-              <td>{{ vehicule.nom }}</td>
-              <td>
-                <button @click="editVehicule(vehicule)">Modifier</button>
-                <button @click="deleteVehicule(vehicule.id)">Supprimer</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <form @submit.prevent="addVehicule">
-          <input type="text" v-model="newVehicule.nom" placeholder="Nom du véhicule" required />
-          <button type="submit">Ajouter un Véhicule</button>
-        </form>
-      </div>
-  
-      <!-- Formulaire pour Modifier un Véhicule -->
+
+      <h2>Véhicules</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="vehicule in vehicles" :key="vehicule.id">
+            <td>{{ vehicule.id }}</td>
+            <td>{{ vehicule.nom }}</td>
+            <td>
+              <button @click="editVehicule(vehicule)">Modifier</button>
+              <button @click="deleteVehicule(vehicule.id)">Supprimer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <form @submit.prevent="addVehicule">
+        <input type="text" v-model="newVehicule.nom" placeholder="Nom du véhicule" required />
+        <button type="submit">Ajouter un Véhicule</button>
+      </form>
+      <div>
+    <h2>Ajouter un Véhicule</h2>
+    <form @submit.prevent="addVehicule">
+      <input type="text" v-model="newVehicule.nom" placeholder="Nom du véhicule" required />
+      <input type="number" v-model="newVehicule.cylindre" placeholder="Cylindre" required />
+      <input type="text" v-model="newVehicule.moteur" placeholder="Moteur" required />
+      <input type="number" v-model="newVehicule.niveau_de_bruit" placeholder="Niveau de bruit" required />
+      <input type="number" v-model="newVehicule.prix" placeholder="Prix" required />
+      <input type="text" v-model="newVehicule.puissance_maxi" placeholder="Puissance max" required />
+      <input type="file" @change="onFileChange" />
+      <select v-model="newVehicule.id_type" required>
+        <option v-for="type in types" :key="type.id" :value="type.id">{{ type.nom }}</option>
+      </select>
+      <select v-model="newVehicule.id_marque" required>
+        <option v-for="marque in marques" :key="marque.id" :value="marque.id">{{ marque.nom }}</option>
+      </select>
+      <select v-model="newVehicule.id_couleur" required>
+        <option v-for="couleur in couleurs" :key="couleur.id" :value="couleur.id">{{ couleur.nom }}</option>
+      </select>
+      <button type="submit">Ajouter le Véhicule</button>
+    </form>
+  </div>
+    </div>
       <div v-if="editingVehicule">
-        <h2>Modifier le Véhicule</h2>
-        <form @submit.prevent="updateVehicule">
-          <input type="text" v-model="editingVehicule.nom" placeholder="Nom du véhicule" required />
-          <button type="submit">Sauvegarder</button>
-        </form>
-      </div>
+      <h2>Modifier le Véhicule</h2>
+      <form @submit.prevent="updateVehicule">
+        <input type="text" v-model="editingVehicule.nom" placeholder="Nom du véhicule" required />
+        <input type="number" v-model="editingVehicule.cylindre" placeholder="Cylindre" required />
+        <input type="text" v-model="editingVehicule.moteur" placeholder="Moteur" required />
+        <input type="number" v-model="editingVehicule.niveau_de_bruit" placeholder="Niveau de bruit" required />
+        <input type="number" v-model="editingVehicule.prix" placeholder="Prix" required />
+        <input type="text" v-model="editingVehicule.puissance_maxi" placeholder="Puissance max" required />
+        <input type="file" @change="onFileChange" />
+        <select v-model="editingVehicule.id_type">
+          <option v-for="type in types" :key="type.id" :value="type.id">{{ type.nom }}</option>
+        </select>
+        <select v-model="editingVehicule.id_marque">
+          <option v-for="marque in marques" :key="marque.id" :value="marque.id">{{ marque.nom }}</option>
+        </select>
+        <select v-model="editingVehicule.id_couleur">
+          <option v-for="couleur in couleurs" :key="couleur.id" :value="couleur.id">{{ couleur.nom }}</option>
+        </select>
+        <button type="submit">Sauvegarder</button>
+      </form>
+    </div>
   
       <!-- Liste des Types -->
       <div>
@@ -209,13 +243,14 @@ export default {
       editingType: null,
       editingCouleur: null,
       editingMarque: null,
+      newVehicule: { nom: "", cylindre: "", moteur: "", niveau_de_bruit: "", prix: "", puissance_maxi: "", id_type: "", id_marque: "", id_couleur: "" },
     };
   },
 
   async created() {
     await this.fetchCategories();
     await this.fetchTypes();
-   
+    await this.fetchVehicles();
     await this.fetchCouleurs();
     await this.fetchMarques();
   },
@@ -235,7 +270,87 @@ export default {
         console.error("Erreur lors de la récupération des catégories :", error);
       }
     },
-    
+    async fetchVehicles() {
+      try {
+        const response = await fetch("http://localhost:3000/vehicule", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        const data = await response.json();
+        this.vehicles = data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des véhicules :", error);
+      }
+    },
+    onFileChange(event) {
+      this.newFile = event.target.files[0];
+    },
+
+   
+    async addVehicule() {
+      const formData = new FormData();
+      formData.append("nom", this.newVehicule.nom);
+      formData.append("cylindre", this.newVehicule.cylindre);
+      formData.append("moteur", this.newVehicule.moteur);
+      formData.append("niveau_de_bruit", this.newVehicule.niveau_de_bruit);
+      formData.append("prix", this.newVehicule.prix);
+      formData.append("puissance_maxi", this.newVehicule.puissance_maxi);
+      formData.append("photo", this.newFile);  // Send photo as part of the form
+      formData.append("id_type", this.newVehicule.id_type);
+      formData.append("id_marque", this.newVehicule.id_marque);
+      formData.append("id_couleur", this.newVehicule.id_couleur);
+
+      try {
+        const response = await fetch("http://localhost:3000/api/vehicules/add", {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
+        const addedVehicule = await response.json();
+        this.vehicles.push(addedVehicule);
+        this.newVehicule = { nom: "", cylindre: "", moteur: "", niveau_de_bruit: "", prix: "", puissance_maxi: "", id_type: "", id_marque: "", id_couleur: "" };
+        this.newFile = null;  // Reset the file input
+      } catch (error) {
+        console.error("Erreur d'ajout du véhicule :", error);
+      }
+    },
+
+    async updateVehicule() {
+      const formData = new FormData();
+      formData.append("nom", this.editingVehicule.nom);
+      formData.append("cylindre", this.editingVehicule.cylindre);
+      formData.append("moteur", this.editingVehicule.moteur);
+      formData.append("niveau_de_bruit", this.editingVehicule.niveau_de_bruit);
+      formData.append("prix", this.editingVehicule.prix);
+      formData.append("puissance_maxi", this.editingVehicule.puissance_maxi);
+      if (this.newFile) {
+        formData.append("photo", this.newFile);  
+      }
+      formData.append("id_type", this.editingVehicule.id_type);
+      formData.append("id_marque", this.editingVehicule.id_marque);
+      formData.append("id_couleur", this.editingVehicule.id_couleur);
+
+      try {
+        const response = await fetch(`http://localhost:3000/vehicule/${this.editingVehicule.id}`, {
+          method: "PUT",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
+        const updatedVehicule = await response.json();
+        const index = this.vehicles.findIndex(v => v.id === updatedVehicule.id);
+        if (index !== -1) {
+          this.vehicles[index] = updatedVehicule;
+        }
+        this.editingVehicule = null;
+      } catch (error) {
+        console.error("Erreur de mise à jour du véhicule :", error);
+      }
+    },
     async fetchTypes() {
       try {
         const response = await fetch("http://localhost:3000/typevehicule", {
@@ -389,6 +504,9 @@ export default {
 
     async editMarque(marque) {
       this.editingMarque = { ...marque };
+    },
+    editVehicule(vehicule) {
+      this.editingVehicule = { ...vehicule };
     },
 
     // Update methods for all entities
@@ -572,8 +690,8 @@ export default {
 </script>
 
   
-  <style scoped>
-  /* Conteneur global */
+<style scoped>
+/* Conteneur global */
 div {
   max-width: 1200px;
   margin: 0 auto;
@@ -646,12 +764,17 @@ button:hover {
 }
 
 /* Entrées de formulaire */
-input[type="text"] {
-  padding: 8px;
-  margin-right: 10px;
+input[type="text"], 
+input[type="number"], 
+select, 
+input[type="file"] {
+  padding: 12px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: 5px;
+  width: 100%; /* Modification de la largeur */
+  margin-bottom: 15px;
+  box-sizing: border-box;
 }
 
 /* Formulaires */
@@ -660,7 +783,10 @@ form {
   margin-bottom: 30px;
 }
 
-form input[type="text"] {
+form input[type="text"],
+form input[type="number"],
+form select,
+form input[type="file"] {
   width: 100%;
   padding: 10px;
   border: 1px solid #bdc3c7;
@@ -669,6 +795,7 @@ form input[type="text"] {
   margin-bottom: 10px;
 }
 
+/* Bouton de soumission */
 form button[type="submit"] {
   background-color: #3498db; /* Bleu */
   color: white;
@@ -684,40 +811,129 @@ form button[type="submit"]:hover {
   background-color: #2980b9; /* Bleu plus foncé */
 }
 
-/* Options pour une mise en page responsive */
+/* Conteneur du formulaire de modification et d'ajout */
+div[v-if="editingVehicule"], div[v-if="newVehicule"] {
+  background-color: #fff;
+  padding: 30px;
+  margin-top: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+/* Titre du formulaire */
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Formulaire de modification et d'ajout */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Champs de texte et sélection */
+input[type="text"], 
+input[type="number"], 
+select, 
+input[type="file"] {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: calc(50% - 10px); /* Ajustement pour deux colonnes */
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+/* Largeur du fichier photo */
+input[type="file"] {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+
+button {
+  padding: 6px 12px; 
+  border: none;
+  background-color: #f1c40f; 
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: background-color 0.3s ease;
+  font-size: 14px; 
+}
+
+button:hover {
+  background-color: #f39c12; /* Jaune plus foncé au survol */
+}
+
+
+/* Responsivité pour petits écrans */
 @media (max-width: 768px) {
-  div {
-    padding: 10px;
+  form {
+    flex-direction: column;
   }
 
-  table, thead, tbody, th, td, tr {
-    display: block;
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
   }
 
-  table thead {
-    display: none;
-  }
-
-  table tbody tr {
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-  }
-
-  table tbody td {
-    padding: 10px 5px;
-    text-align: right;
-    position: relative;
-  }
-
-  table tbody td::before {
-    content: attr(data-label);
-    position: absolute;
-    left: 5px;
-    width: 45%;
-    font-weight: bold;
-    text-align: left;
+  button {
+    width: 100%;
   }
 }
 
-  </style>
+/* Table des véhicules */
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+table button {
+  padding: 6px 12px;
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+table button:hover {
+  background-color: #d32f2f;
+}
+</style>
+
   

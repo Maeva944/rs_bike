@@ -5,6 +5,7 @@ import Connexion from "./pages/Connexion.vue";
 import VehiculeByCategorie from "./pages/Categorie.vue";
 import VehiculeDetail from "./pages/VehiculeDetail.vue";
 import AdminDashboard from "./pages/AdminDashboard.vue";
+import MesReservation from "./pages/Reservation.vue"
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -33,6 +34,10 @@ const router = createRouter({
             path: '/admin-dashboard',
             component: AdminDashboard,
             meta: { requiresAuth: true, restrictedTo: 'admin' }
+        },
+        {
+            path: '/mes-reservations',
+            component: MesReservation
         }
     ]
 });

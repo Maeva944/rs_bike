@@ -47,6 +47,10 @@ export default {
         const payload = JSON.parse(atob(token.split(".")[1]));
         const expTime = payload.exp * 1000;
         const currentTime = Date.now();
+        const roleId = payload.role_id;  
+        const userId = payload.id;
+        localStorage.setItem("role_id", roleId); 
+        localStorage.setItem("id", userId);
 
         if (currentTime >= expTime) {
           console.warn("⏳ Token expiré après 1h, suppression et redirection !");

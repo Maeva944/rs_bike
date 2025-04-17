@@ -17,7 +17,8 @@
           <li><router-link to="/">Accueil</router-link></li>
           <li v-if="!isLoggedIn"><router-link to="/connexion">Connexion</router-link></li>
           <li v-if="!isLoggedIn"><router-link to="/inscription">Inscription</router-link></li>
-          <li v-if="isLoggedIn && isAdmin"><router-link to="/dashboard">Dashboard</router-link></li>
+          <li v-if="isLoggedIn"><router-link to="/mes-reservations">Mes réservations</router-link></li>
+          <li v-if="isLoggedIn && isAdmin"><router-link to="/admin-dashboard">Dashboard</router-link></li>
           <li v-if="isLoggedIn"><button @click="logout">Se déconnecter</button></li>
         </ul>
       </nav>
@@ -28,7 +29,7 @@
   export default {
     data() {
       return {
-        categories: [],  // Stockage des catégories récupérées
+        categories: [],  
       };
     },
     computed: {
