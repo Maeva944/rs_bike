@@ -157,7 +157,7 @@
         }
       },
       async reserveCreneau(creneau) {
-        const userId = JSON.parse(localStorage.getItem('id'));
+        const userId = JSON.parse(localStorage.getItem('id_user'));
   
         console.log('ID utilisateur récupéré : ', userId); 
   
