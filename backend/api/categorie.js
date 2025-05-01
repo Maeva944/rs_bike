@@ -20,23 +20,30 @@ router.get("/vehicule/categorie/:id", async (req, res) => {
 
     try {
         let query = `
-            SELECT v.*, c.nom AS categorie, m.nom AS marque 
+            SELECT v.*, c.nom AS categorie, m.nom AS marque, t.nom AS type_vehicule 
             FROM vehicule v
             INNER JOIN categorie c ON v.id_categorie = c.id
             INNER JOIN marque m ON v.id_marque = m.id
+            INNER JOIN type_vehicule t ON v.id_type = t.id
             WHERE v.id_categorie = $1
         `;
         let params = [id];
 
-        if (id_marque) {
+        if (id_marque && !id_type) {
             query += " AND v.id_marque = $2";
             params.push(id_marque);
         }
 
-        if (id_type) {
-            query += " AND v.id_type = $3";
+        if (id_type && !id_marque) {
+            query += " AND v.id_type = $2";
             params.push(id_type);
         }
+        
+        if(id_type && id_marque){
+          query += "AND v.id_marque = $2 AND v.id_type = $3";
+          params.push(id_marque, id_type)
+        }
+        
 
         const result = await pool.query(query, params);
         res.json(result.rows);

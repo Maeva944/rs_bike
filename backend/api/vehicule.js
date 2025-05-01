@@ -25,9 +25,8 @@ router.get('/vehiculedetail/:id', async (req, res) => {
     console.log('ID du véhicule:', id);
   
     try {
-      // S'assurer que l'ID est bien un entier
-      const vehicleId = parseInt(id, 10);
-      if (isNaN(vehicleId)) {
+      const vehiculeId = parseInt(id, 10);
+      if (isNaN(vehiculeId)) {
         return res.status(400).json({ error: "L'ID du véhicule est invalide" });
       }
   
@@ -43,25 +42,25 @@ router.get('/vehiculedetail/:id', async (req, res) => {
           t.nom AS type,
           m.nom AS marque,
           c.nom AS couleur
-        FROM vehicule v
-        INNER JOIN type_vehicule t ON v.id_type = t.id
-        INNER JOIN marque m ON v.id_marque = m.id
-        INNER JOIN couleur c ON v.id_couleur = c.id
-        WHERE v.id = $1;
-      `, [vehicleId]);
+          FROM vehicule v
+          INNER JOIN type_vehicule t ON v.id_type = t.id
+          INNER JOIN marque m ON v.id_marque = m.id
+          INNER JOIN couleur c ON v.id_couleur = c.id
+          WHERE v.id = $1;
+      `, [vehiculeId]);
   
       if (result.rows.length === 0) {
         return res.status(404).json({ error: "Véhicule non trouvé" });
       }
   
-      res.json(result.rows[0]); // Retourne la première ligne si elle existe
+      res.json(result.rows[0]);
     } catch (error) {
       console.error("Erreur lors de la récupération du véhicule:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
   
-  // Ajouter un véhicule
+  
 router.post("/add", async (req, res) => {
     const { nom, cylindre, moteur, niveau_de_bruit, prix, puissance_maxi, photo, id_type, id_marque, id_couleur } = req.body;
   
@@ -78,7 +77,7 @@ router.post("/add", async (req, res) => {
     }
   });
   
-  // Modifier un véhicule
+  
   router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const { nom, cylindre, moteur, niveau_de_bruit, prix, puissance_maxi, photo, id_type, id_marque, id_couleur } = req.body;

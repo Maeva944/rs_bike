@@ -60,8 +60,13 @@
         }
       }
     },
+    watch: {
+    '$route'() {
+      this.isLoggedIn = !!localStorage.getItem("token");
+    },
+    },
     mounted() {
-      this.fetchCategories();  // Récupération des catégories au montage du composant
+      this.fetchCategories(); 
     }
   };
   </script>

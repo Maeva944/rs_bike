@@ -14,10 +14,11 @@
           </button>
         </div>
   
-        <input type="tel" placeholder="Numéro de téléphone" v-model="tel" required />
+        <input type="tel" placeholder="0123456789" v-model="tel" required />
   
         <input type="submit" value="S'inscrire" />
-  
+        <p class="error">{{ errorMessage }}</p>
+        <p class="success">{{ successMessage }}</p>
         <div class="login-link">
           <p>Vous avez déjà un compte ? <span @click="goToLogin">Connectez-vous</span></p>
         </div>
@@ -36,6 +37,7 @@
         tel: "",
         showPassword: false,
         errorMessage: "",
+        successMessage: "",
       };
     },
     methods: {
@@ -58,12 +60,14 @@
   
           const data = await response.json();
   
-          if (response.status === 400 || response.status === 401) {
+          if (response.status === 400 || response.status === 401 || response.status === 409) {
             this.errorMessage = data.error;
             return;
           }
-  
-          this.$router.push("/connexion");
+
+          if(response.status === 200 || response.status === 201){
+            this.$router.push("/connexion");
+          }
         } catch (error) {
           this.errorMessage = "Erreur lors de l'inscription.";
         }

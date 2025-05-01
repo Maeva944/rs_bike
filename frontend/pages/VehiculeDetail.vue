@@ -1,20 +1,20 @@
 <template>
-    <div v-if="vehicle" class="vehicle-detail-container">
+    <div v-if="vehicule" class="vehicle-detail-container">
       <div class="vehicle-image">
-        <img :src="vehicle.photo" alt="Vehicle image" class="vehicle-photo" />
+        <img :src="vehicule.photo" alt="Vehicle image" class="vehicle-photo" />
       </div>
   
       <div class="vehicle-info">
-        <h1>{{ vehicle.nom }}</h1>
+        <h1>{{ vehicule.nom }}</h1>
         <div class="vehicle-characteristics">
-          <p><strong>Marque:</strong> {{ vehicle.marque }}</p>
-          <p><strong>Type:</strong> {{ vehicle.type }}</p>
-          <p><strong>Cylindre:</strong> {{ vehicle.cylindre }} cm³</p>
-          <p><strong>Moteur:</strong> {{ vehicle.moteur }}</p>
-          <p><strong>Niveau de bruit:</strong> {{ vehicle.niveau_de_bruit }} dB</p>
-          <p><strong>Puissance maximale:</strong> {{ vehicle.puissance_maxi }}</p>
-          <p><strong>Couleur:</strong> {{ vehicle.couleur }}</p>
-          <p><strong>Prix:</strong> {{ vehicle.prix }} €</p>
+          <p><strong>Marque:</strong> {{ vehicule.marque }}</p>
+          <p><strong>Type:</strong> {{ vehicule.type }}</p>
+          <p><strong>Cylindre:</strong> {{ vehicule.cylindre }} cm³</p>
+          <p><strong>Moteur:</strong> {{ vehicule.moteur }}</p>
+          <p><strong>Niveau de bruit:</strong> {{ vehicule.niveau_de_bruit }} dB</p>
+          <p><strong>Puissance maximale:</strong> {{ vehicule.puissance_maxi }}</p>
+          <p><strong>Couleur:</strong> {{ vehicule.couleur }}</p>
+          <p><strong>Prix:</strong> {{ vehicule.prix }} €</p>
         </div>
       </div>
   
@@ -51,7 +51,7 @@
   export default {
     data() {
       return {
-        vehicle: null,
+        vehicule: null,
         reservationDate: '',
         reservationTime: '',
         availableCreneaux: [],
@@ -60,15 +60,15 @@
       };
     },
     created() {
-      this.fetchVehicleDetails();
+      this.fetchVehiculeDetails();
       this.checkUserRole();
       this.fetchCreneaux();
     },
     methods: {
-      async fetchVehicleDetails() {
-        const vehicleId = this.$route.params.id;
+      async fetchVehiculeDetails() {
+        const vehiculeId = this.$route.params.id;
         try {
-          const response = await fetch(`http://localhost:3000/vehicule/vehiculedetail/${vehicleId}`);
+          const response = await fetch(`http://localhost:3000/vehicule/vehiculedetail/${vehiculeId}`);
   
           if (!response.ok) {
             throw new Error('Véhicule non trouvé');
@@ -81,10 +81,10 @@
             return;
           }
   
-          this.vehicle = data;
+          this.vehicule = data;
         } catch (error) {
           console.error("Erreur lors de la récupération du véhicule:", error);
-          this.vehicle = null;
+          this.vehicule = null;
         }
       },
   
@@ -111,9 +111,9 @@
       },
   
       async fetchCreneaux() {
-        const vehicleId = this.$route.params.id;
+        const vehiculeId = this.$route.params.id;
         try {
-          const response = await fetch(`http://localhost:3000/creneaux/${vehicleId}`);
+          const response = await fetch(`http://localhost:3000/creneaux/${vehiculeId}`);
           const data = await response.json();
   
           this.availableCreneaux = data.filter(creneau => creneau.is_available);
@@ -123,11 +123,11 @@
       },
   
       async addCreneau() {
-        const vehicleId = this.$route.params.id; 
+        const vehiculeId = this.$route.params.id; 
         const payload = {
           date_: this.reservationDate,  
           time_: this.reservationTime, 
-          id_vehicule: vehicleId,   
+          id_vehicule: vehiculeId,   
         };
 
   
@@ -157,25 +157,24 @@
         }
       },
       async reserveCreneau(creneau) {
-        const userId = JSON.parse(localStorage.getItem('id_user'));
+        const userId = JSON.parse(localStorage.getItem('id'));
   
         console.log('ID utilisateur récupéré : ', userId); 
   
-
   if (!userId) {
     console.error('Erreur : ID utilisateur non trouvé');
     return;  
 
   }
 
-  const vehicleId = this.$route.params.id;
+  const vehiculeId = this.$route.params.id;
   const payload = {
     id_user: userId,  
     id_creneau: creneau.id,
     id_etat: 2, 
-    id_vehicule: vehicleId,  
+    id_vehicule: vehiculeId,  
   };
-  console.log(creneau.id,userId, vehicleId);
+  console.log(creneau.id,userId, vehiculeId);
   console.log("Données envoyées dans la requête de réservation : ", payload);
 
   try {

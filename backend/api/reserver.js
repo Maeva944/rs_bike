@@ -50,7 +50,7 @@ router.get("/reservations/:id", async (req, res) => {
       `, [id]);
   
       if (result.rows.length === 0) {
-        return res.status(404).json({ error: "Aucune réservation trouvée pour cet utilisateur." });
+        return res.status(404).json({ error: "Aucune réservation trouvée." });
       }
   
       res.json(result.rows);
@@ -61,7 +61,6 @@ router.get("/reservations/:id", async (req, res) => {
   });
   
   
-// Annuler une réservation et rendre le créneau disponible
 router.delete("/reservation/:id", async (req, res) => {
     const { id } = req.params;
   
@@ -87,6 +86,28 @@ router.delete("/reservation/:id", async (req, res) => {
     }
   });
   
+  router.get('/all-reservation', async (req, res) =>{
+    try{
+      const result2 = await pool.query(`
+      SELECT r.id, r.id_user, r.id_etat, r.id_vehicule, r.id_creneau, c.date_ AS reservation_date, c.time_ AS reservation_time, 
+      v.nom AS vehicule, e.nom AS etat,
+      u.email as email
+      FROM reservation r
+      JOIN creneaux c ON r.id_creneau = c.id
+      JOIN vehicule v ON r.id_vehicule = v.id
+      JOIN etat e ON r.id_etat = e.id
+      JOIN users u ON r.id_user = u.id`);
+
+      if(result2.rows === 0){
+        return res.status(404).json({ error: "Aucune réservation trouvée." });
+      }
+      res.json(result2.rows);
+    }catch(error){
+      console.error("Erreur lors de l'annulation de la réservation :", error);
+      res.status(500).json({ error: "Erreur serveur." });
+    }
+
+  })
 
   module.exports = router;
   
