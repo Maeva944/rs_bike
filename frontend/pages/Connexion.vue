@@ -49,7 +49,7 @@
                 }
 
                 localStorage.setItem("token", data.token); 
-                this.$router.push("/");
+                window.location.href="/";
             }catch (error) {
                 this.errorMessage = "Erreur lors de la connexion.";
             }

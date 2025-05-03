@@ -3,7 +3,6 @@
       <div class="vehicle-image">
         <img :src="vehicule.photo" alt="Vehicle image" class="vehicle-photo" />
       </div>
-  
       <div class="vehicle-info">
         <h1>{{ vehicule.nom }}</h1>
         <div class="vehicle-characteristics">
@@ -26,6 +25,8 @@
           <input type="time" v-model="reservationTime" required />
           <button type="submit">Ajouter le créneau</button>
         </form>
+        <p class="error"></p>
+        <p class="success"></p>
       </div>
   
       <!-- Section réservation pour l'utilisateur -->
@@ -36,6 +37,8 @@
             <button @click="reserveCreneau(creneau)" :disabled="!creneau.is_available">
               {{ formatDate(creneau.date_) }} à {{ formatTime(creneau.time_) }}
             </button>
+            <p class="error"> {{  error }}</p>
+            <p class="success">{{ success }}</p>
           </div>
         </div>
       </div>
@@ -57,6 +60,8 @@
         availableCreneaux: [],
         userIsAdmin: false,
         userIsUser: false,
+        error: "",
+        success: "",
       };
     },
     created() {
@@ -86,8 +91,10 @@
           console.error("Erreur lors de la récupération du véhicule:", error);
           this.vehicule = null;
         }
+        const role = localStorage.getItem('role_id')
+        console.log(role)
       },
-  
+      
       formatDate(dateStr) {
         const date = new Date(dateStr);
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
@@ -105,7 +112,7 @@
         const userRole = JSON.parse(localStorage.getItem('role_id'));
         if (userRole === 1) {
           this.userIsAdmin = true;
-        } else if (userRole === 2) {
+        } else if (userRole === 2 || userRole === null) {
           this.userIsUser = true;
         }
       },
@@ -117,6 +124,17 @@
           const data = await response.json();
   
           this.availableCreneaux = data.filter(creneau => creneau.is_available);
+
+          if (response.status === 400 || response.status === 401 || response.status === 409) {
+            this.error = data.error;
+            return;
+          }
+
+          if(response.status === 200 || response.status === 201){
+            this.success = data.msg;
+          }
+
+          console.log(this.error, this.success)
         } catch (error) {
           console.error("Erreur lors de la récupération des créneaux :", error);
         }

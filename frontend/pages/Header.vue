@@ -48,7 +48,9 @@
     methods: {
       logout() {
         localStorage.removeItem('token');
-        this.$router.push('/connexion');
+        localStorage.removeItem('role_id');
+        localStorage.removeItem('id');
+        
       },
       async fetchCategories() {
         try {

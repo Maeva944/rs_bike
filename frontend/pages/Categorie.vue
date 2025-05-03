@@ -14,7 +14,22 @@
           <option v-for="type in types" :key="type.id" :value="type.id">{{ type.nom }}</option>
         </select>
       </div>
+
+      <button @click="reloadFilter">Réinitialisé les filtres</button>
       
+      <section class="product-container2">
+        <div v-if="vehicules.length === 0" class="no-vehicles">Aucun véhicule trouvé pour cette catégorie avec ces filtres.</div>
+        <article v-else v-for="vehicule in vehicules" :key="vehicule.id" class="vehicle-card2" @click="goToVehiculeDetail(vehicule.id)">
+          <img :src="vehicule.photo" alt="Vehicle image" class="vehicle-photo2" />
+            <div class="vehicle-info2">
+              <h3>{{ vehicule.nom }}</h3>
+              <p class="brand">Marque: {{ vehicule.marque }}</p>
+              <p class="type">Type: {{ vehicule.type_vehicule }}</p>
+              <p class="price">{{ vehicule.prix }} €</p>
+            </div>
+        </article>
+      </section>
+      <!--
       <div class="product-container">
         <div v-if="vehicules.length === 0" class="no-vehicles">Aucun véhicule trouvé pour cette catégorie avec ces filtres.</div>
         <div v-else>
@@ -28,7 +43,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
   </template>
   
   
@@ -109,10 +124,17 @@ export default {
   } catch (error) {
     console.error("Erreur lors de la récupération des véhicules", error);
   }
-    },
-    goToVehiculeDetail(id) {
-        this.$router.push(`/vehiculedetail/${id}`);
-    }
+  },
+  goToVehiculeDetail(id) {
+       this.$router.push(`/vehiculedetail/${id}`);
+  },
+  reloadFilter(){
+    this.selectedBrand = "",
+    this.selectedType = "",
+    this.fetchVehicules();
+  }
+
+  
 
   },
 };
@@ -122,20 +144,27 @@ export default {
 <style scoped>
 
 .filter-container {
-  margin-bottom: 20px;
+  padding: 1% 2%;
   width: 100%;
 }
 
 
 
-.product-container{
-  display: flex !important;
+.product-container2{
+  display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  padding: 1%;
 }
 
-.vehicle-card{
-  width: 10%;
+
+.vehicle-card2{
+  width: 25%;
+  padding: 2%;
+  cursor: pointer;
+}
+
+.vehicle-photo2{
+  width: 100%;
 }
 
 h3 {

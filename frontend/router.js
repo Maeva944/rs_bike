@@ -6,6 +6,8 @@ import VehiculeByCategorie from "./pages/Categorie.vue";
 import VehiculeDetail from "./pages/VehiculeDetail.vue";
 import AdminDashboard from "./pages/AdminDashboard.vue";
 import MesReservation from "./pages/Reservation.vue"
+import Account from "./pages/Account.vue"
+import NotFound from "./pages/Notfound.vue"
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -37,7 +39,17 @@ const router = createRouter({
         },
         {
             path: '/mes-reservations',
+            meta: { requiresAuth: true },
             component: MesReservation
+        },
+        {
+            path: '/compte',
+            component: Account
+        },
+        {
+            path: '/:pathMatch(.*)*', 
+            name: 'NotFound', 
+            component: NotFound
         }
     ]
 });

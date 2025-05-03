@@ -158,6 +158,12 @@
     cursor: pointer;
     margin-left: 15px;
   }
+
+  .error{
+    color: rgb(224, 21, 21);
+    font-size: 12pt;
+    font-weight: bold;
+  }
   
   .login-link {
     text-align: center;

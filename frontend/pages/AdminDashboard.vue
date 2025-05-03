@@ -234,7 +234,6 @@ export default {
       couleurs: [],
       marques: [],
       newCategorie: "",
-      newVehicule: { nom: "" },
       newType: "",
       newCouleur: "",
       newMarque: "",
@@ -877,7 +876,7 @@ button {
 }
 
 button:hover {
-  background-color: #f39c12; /* Jaune plus foncé au survol */
+  background-color: #f39c12; 
 }
 
 

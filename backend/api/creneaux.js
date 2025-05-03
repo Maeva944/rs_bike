@@ -4,8 +4,7 @@ const router = express.Router();
 
 router.post("/creneaux/add-creneau", async (req, res) => {
     const { date_, time_, id_vehicule } = req.body;
-  
-    // Log des données reçues
+
     console.log('Données reçues :', { date_, time_, id_vehicule });
   
     if (!date_ || !time_ || !id_vehicule) {
