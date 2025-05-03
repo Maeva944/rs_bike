@@ -32,15 +32,15 @@ router.post("/", async (req, res) => {
             return res.status(401).json({ error: "Numéro invalide." });
         }
 
-        const { rowsEmail } = await pool.query(`SELECT 1 FROM users WHERE email = $1`, [email]);
+        const  rowsEmail  = await pool.query(`SELECT 1 FROM users WHERE email = $1`, [email]);
 
-        const { rowsTel } = await pool.query(`SELECT 1 FROM users WHERE tel = $1`, [tel]);
+        const  rowsTel  = await pool.query(`SELECT 1 FROM users WHERE tel = $1`, [tel]);
 
-        if(rowsTel.length > 0){
-            return res.status(409).json({error: "Ce numéro est déjà utilisé, vueillez vous connecter."})
+        if(rowsTel.rows.length > 0){
+            return res.status(409).json({error: "Ce numéro est déjà utilisé"})
         }
 
-        if(rowsEmail.length > 0){
+        if(rowsEmail.rows.length > 0){
             return res.status(409).json({error: "Cet email est déjà utilisé, vueillez vous connecter."})
         }
 
