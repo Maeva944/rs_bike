@@ -16,6 +16,17 @@ const creneaux = require('./api/creneaux');
 
 app.disable('x-powered-by');
 
+app.use(helmet());
+
+const corsOptions = {
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
