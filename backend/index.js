@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require("cors");
 const helmet = require('helmet');
-const Inscription = require ("./api/inscription");
+const Inscription = require("./api/inscription");
 const Connexion = require('./api/auth');
 const Categorie = require('./api/categorie');
 const Vehicule = require('./api/vehicule');
@@ -15,7 +15,14 @@ const creneaux = require('./api/creneaux');
 
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
+app.use(
+helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      frameAncestors: ["'none'"],
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/inscription", Inscription);
