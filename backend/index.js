@@ -18,8 +18,19 @@ app.disable('x-powered-by');
 
 app.use(helmet());
 
+const allowedOrigins = [
+  "http://localhost:5173",
+];
+
 const corsOptions = {
-  origin: 'http://localhost:5173', 
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -29,7 +40,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.json());
 app.use(cors());
-app.use(helmet());
+app.use(helmet.noSniff());
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -37,6 +48,13 @@ app.use(
     message: { error: "Trop de tentatives. Réessayez plus tard." }
   }));
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet.contentSecurityPolicy({
+  defaultSrc: ["'self'"],
+  scriptSrc: ["'self'"],
+  styleSrc: ["'self'"],
+  imgSrc: ["'self'", 'data:'],
+  objectSrc: ["'none'"],
+}));
 
 
 app.use("/inscription", Inscription);
