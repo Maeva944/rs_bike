@@ -1,16 +1,18 @@
 CREATE DATABASE rs_bike;
 
-DROP TABLE IF EXISTS avis, reservation, vehicule, marque, categorie, type_vehicule, etat, message_contact, users, roles CASCADE;
+DROP TABLE IF EXISTS avis, reservation, vehicule, marque, categorie, type_vehicule, etat, message_contact, users, roles, creneaux CASCADE;
 
 CREATE TABLE roles(
     id SERIAL PRIMARY KEY, 
     nom VARCHAR(150) NOT NULL
 );
 
+
 CREATE TABLE users(
     id SERIAL PRIMARY KEY, 
     nom VARCHAR(250) NOT NULL,
     prenom VARCHAR(250) NOT NULL, 
+    mot_de_passe VARCHAR(250) NOT NULL,
     email VARCHAR(250) NOT NULL, 
     tel INT NOT NULL,
     id_role INT REFERENCES roles(id)
@@ -79,6 +81,14 @@ CREATE TABLE reservation(
     id_user INT REFERENCES users(id),
     id_etat INT REFERENCES etat(id),
     id_vehicule INT REFERENCES vehicule(id)
+);
+
+CREATE TABLE creneaux(
+    id SERIAL PRIMARY KEY, 
+    date_ DATE NOT NULL, 
+    time_ TIME NOT NULL,
+    id_vehicule INT REFERENCES vehicule(id),
+    is_available BOOLEAN DEFAULT TRUE
 );
 
 -- Insertion des rôles
