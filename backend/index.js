@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const cors = require("cors");
-const helmet = require("helmet");
-const Inscription = require ("./api/inscription");
+const helmet = require('helmet');
+const Inscription = require("./api/inscription");
 const Connexion = require('./api/auth');
 const Categorie = require('./api/categorie');
 const Vehicule = require('./api/vehicule');
@@ -24,6 +24,16 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.json());
+app.use(cors());
+app.use(
+helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      frameAncestors: ["'none'"],
+    },
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/inscription", Inscription);
