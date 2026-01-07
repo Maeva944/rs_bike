@@ -1,18 +1,17 @@
-version: '3.8'
+version: "3.8"
 
 services:
-
   backend:
-    build:
-      context: ./backend
+    build: ./backend
     container_name: backend
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=production
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=rs_bike
-      - DB_USER=postgres
-      - DB_PASSWORD=password
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3000:3000"
     depends_on:
@@ -20,44 +19,44 @@ services:
     networks:
       - rs_network
 
-  # Service pour le frontend Vue.js
   frontend:
-    build:
-      context: ./frontend
+    build: ./frontend
     container_name: frontend
     environment:
-      - VUE_APP_API_URL=http://localhost:3000 # URL de l'API backend
+      - VUE_APP_API_URL=http://backend:3000
     ports:
-      - "8080:8080"
+      - "8080:80"
     networks:
       - rs_network
 
-  # Service pour PostgreSQL
   postgres:
     image: postgres:13
     container_name: postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: rs_bike
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - rs_network
 
-  # Service pour PgAdmin
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@email.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
-    networks:
-      - rs_network
     depends_on:
       - postgres
+    networks:
+      - rs_network
 
 volumes:
   postgres_data:
@@ -65,4 +64,5 @@ volumes:
 networks:
   rs_network:
     driver: bridge
+
 
